@@ -9,9 +9,9 @@ const cookieParser = require("cookie-parser")
 const cors= require("cors");
 const {check,validationResult}=require('express-validator')
 
-
+//My Routes
 const authRoutes = require("./routes/auth")
-
+const userRoutes = require("./routes/user")
 
 
 //DB Connection
@@ -33,6 +33,7 @@ app.use(cors());
 
 //My routes //Using api to visit backend
 app.use("/api",authRoutes);
+app.use("/api",userRoutes);
 
 //PORT
 const port = process.env.PORT || 8000;

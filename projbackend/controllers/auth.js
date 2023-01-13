@@ -71,16 +71,16 @@ exports.signout = (req, res) => {
 
 //protected routes
     //setting the _id 
-    exports.isSignedIn = expressJwt({
+exports.isSignedIn = expressJwt({
         secret: process.env.SECRET,
         userProperty:"auth"
-    });
+  });
 
 
 //custom middlewares
 exports.isAuthenticated = (req,res,next)=>{
     //creating new variable to check is user authenticated
-    let checker = req.profile && req.auth && req.profile._id === request.auth._id;
+    let checker = req.profile && req.auth && req.profile._id == req.auth._id;
     if(!checker){
         return res.status(403).json({
             error:"ACCESS DENIED"
