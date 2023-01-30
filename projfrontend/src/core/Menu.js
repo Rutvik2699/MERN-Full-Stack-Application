@@ -40,7 +40,7 @@ const Menu=({history})=>(
                 </Link>
             </li>
             <li className="nav-item">
-                <Link style={currentTab(history,"/signin")} className="nav-link" to="/singin">
+                <Link style={currentTab(history,"/signin")} className="nav-link" to="/signin">
                     SignIn
                 </Link>
             </li>
