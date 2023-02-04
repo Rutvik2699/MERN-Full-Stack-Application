@@ -1,70 +1,67 @@
 import React, { useState } from "react";
 import Base from "../core/Base";
-import {Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 
-import {signin,authenticate,isAuthenticated} from "../auth/helper"
+import { signin, authenticate, isAuthenticated } from "../auth/helper";
 
 const Signin = () => {
+  const [values, setValues] = useState({
+    email: "",
+    password: "",
+    error: "",
+    loading: false,
+    didRedirect: false
+  });
 
-  const [values,setValues] = useState({
-    email:"rutvikbhoj123@gmail.com",
-    password:"Rutvik@123",
-    error:"",
-    loading:false,
-    didRedirect:false,
-   
-  })
+  const { email, password, error, loading, didRedirect } = values;
+  const { user } = isAuthenticated();
 
-  const {email,password,error,loading,didRedirect}= values
-  const {user} = isAuthenticated();
-
-const handleChange = name => event => {
+  const handleChange = name => event => {
     setValues({ ...values, error: false, [name]: event.target.value });
   };
 
-  const onSubmit = event =>{
+  const onSubmit = event => {
     event.preventDefault();
-    setValues({...values,error:false,loading:true})
-    signin({email,password})
-    .then(data=>{
-      if(data.error){
-        setValues({...values,error:data.error,loading:false})
-      }else{   //firing a callback by help of next .. refer - index.js
-        authenticate(data,()=>{
-          setValues({
-            ...values,
-            didRedirect:true
-          })
-        })
-      }
-    })
-    .catch(console.log("Sign in request failed"))
-  }
+    setValues({ ...values, error: false, loading: true });
+    signin({ email, password })
+      .then(data => {
+        if (data.error) {
+          setValues({ ...values, error: data.error, loading: false });
+        } else {
+          authenticate(data, () => {
+            setValues({
+              ...values,
+              didRedirect: true
+            });
+          });
+        }
+      })
+      .catch(console.log("signin request failed"));
+  };
 
-  const performRedirect=()=>{
-
-    //TODO: do a redirection here
-    if(didRedirect){
-      if(user&& user.role===1){
-        return <p>Redirect to admin</p>
-      }else{
-        return <p>redirectt to user dashboard</p>
+  const performRedirect = () => {
+    //TODO: do a redirect here
+    if (didRedirect) {
+      if (user && user.role === 1) {
+        return <Redirect to="/admin/dashboard" />;
+      } else {
+        return <Redirect to="/user/dashboard" />;
       }
     }
-    if(isAuthenticated()){
-      return <Redirect to="/"/>;
+    if (isAuthenticated()) {
+      return <Redirect to="/" />;
     }
-  }
+  };
 
   const loadingMessage = () => {
     return (
-      loading&&(
+      loading && (
         <div className="alert alert-info">
           <h2>Loading...</h2>
         </div>
       )
-    )
-  }
+    );
+  };
 
   const errorMessage = () => {
     return (
@@ -81,7 +78,6 @@ const handleChange = name => event => {
     );
   };
 
-
   const signInForm = () => {
     return (
       <div className="row">
@@ -89,14 +85,26 @@ const handleChange = name => event => {
           <form>
             <div className="form-group">
               <label className="text-light">Email</label>
-              <input onChange={handleChange("email")} value={email} className="form-control" type="email" />
+              <input
+                onChange={handleChange("email")}
+                value={email}
+                className="form-control"
+                type="email"
+              />
             </div>
 
             <div className="form-group">
               <label className="text-light">Password</label>
-              <input onChange={handleChange("password")} value={email} className="form-control" type="password" />
+              <input
+                onChange={handleChange("password")}
+                value={password}
+                className="form-control"
+                type="password"
+              />
             </div>
-            <button onClick={onSubmit} className="btn btn-success btn-block">Submit</button>
+            <button onClick={onSubmit} className="btn btn-success btn-block">
+              Submit
+            </button>
           </form>
         </div>
       </div>
@@ -105,10 +113,11 @@ const handleChange = name => event => {
 
   return (
     <Base title="Sign In page" description="A page for user to sign in!">
-     {loadingMessage()}
-     {errorMessage()}
+      {loadingMessage()}
+      {errorMessage()}
       {signInForm()}
       {performRedirect()}
+
       <p className="text-white text-center">{JSON.stringify(values)}</p>
     </Base>
   );
